@@ -1,5 +1,4 @@
-from fastapi import FastAPI
-from fastapi import HTTPException
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 
@@ -7,15 +6,19 @@ app = FastAPI()
 
 class Encomenda(BaseModel):
     id: int
-    # cliente_id: int -> Caso seja necessario integraçao com cliente.
     data_envio: str
     status: str
     destino: str
     peso: float
 
-encomendas = [
+class LocalizacaoEncomenda(BaseModel):
+    id: int
+    encomenda_id: int
+    data_registro: str
+    localizacao: str
 
-]
+encomendas = []
+historico_localizacao = []
 
 @app.get("/encomendas/", response_model=List[Encomenda])
 async def listar_todas_encomendas():
@@ -31,7 +34,7 @@ async def ler_encomenda(encomenda_id: int):
     for encomenda in encomendas:
         if encomenda.id == encomenda_id:
             return encomenda
-    return {"msg": "Encomenda não encontrada"}
+    raise HTTPException(status_code=404, detail="Encomenda não encontrada")
 
 @app.put("/encomendas/{encomenda_id}")
 async def atualizar_encomenda(encomenda_id: int, encomenda: Encomenda):
@@ -48,3 +51,34 @@ async def deletar_encomenda(encomenda_id: int):
             del encomendas[idx]
             return {"msg": "Encomenda deletada com sucesso!"}
     raise HTTPException(status_code=404, detail="Encomenda não encontrada")
+
+@app.post("/encomendas/{encomenda_id}/localizacao", response_model=LocalizacaoEncomenda)
+async def adicionar_localizacao_encomenda(encomenda_id: int, localizacao: LocalizacaoEncomenda):
+    for enc in encomendas:
+        if enc.id == encomenda_id:
+            localizacao.encomenda_id = encomenda_id
+            historico_localizacao.append(localizacao)
+            return {"msg": "Localização da encomenda registrada com sucesso!"}
+    raise HTTPException(status_code=404, detail="Encomenda não encontrada")
+
+from fastapi import HTTPException
+
+@app.get("/encomendas/{encomenda_id}/historico_localizacao", response_model=List[LocalizacaoEncomenda])
+async def listar_historico_localizacao_encomenda(encomenda_id: int):
+    historico = []
+    for hist in historico_localizacao:
+        if hist.encomenda_id == encomenda_id:
+            historico.append(hist)
+    if historico:
+        return historico
+    raise HTTPException(status_code=404, detail="Histórico de localização não encontrado para esta encomenda")
+
+@app.delete("/encomendas/{encomenda_id}/historico_localizacao")
+async def limpar_historico_localizacao_encomenda(encomenda_id: int):
+    elementos_para_remover = []
+    for hist in historico_localizacao:
+        if hist.encomenda_id == encomenda_id:
+            elementos_para_remover.append(hist)
+    for elem in elementos_para_remover:
+        historico_localizacao.remove(elem)
+    return {"msg": "Histórico de localização da encomenda deletado com sucesso!"}
