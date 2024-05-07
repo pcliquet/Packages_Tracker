@@ -74,8 +74,8 @@ Para configurar e rodar a aplicação, siga os passos abaixo:
 
 ### Diagrama ER
 
-O diagrama de relacionamento das entidades (ER) pode ser encontrado no arquivo `diagrama_er.png` incluído no repositório.
+![Diagrama ER](Modelo-ER.png)
 
 ### Vídeo de Demonstração
 
-Confira o vídeo de demonstração das atualizações do Handout 02 no [link](url_do_video_aqui).
+Confira o vídeo de demonstração das atualizações do Handout 02 neste [link](https://youtu.be/7tVjPZmdGRA).
