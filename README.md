@@ -1,8 +1,4 @@
-# md-proj-sql-template
-Megadados - Projeto SQL - Template
-
-
-# Projeto de Gerenciamento de Encomendas - FastAPI
+# API de Gerenciamento de Encomendas
 
 Este projeto é uma aplicação FastAPI que implementa um sistema de gerenciamento de encomendas e histórico de localização. Nesta versão, integramos a aplicação com um banco de dados MySQL usando o ORM SQLAlchemy.
 
@@ -13,28 +9,28 @@ Para configurar e rodar a aplicação, siga os passos abaixo:
 ### Requisitos
 
 - Python 3.8+
-- MySQL
+- MySQL Workbench
 - Bibliotecas Python listadas em `requirements.txt`
 
 ### Instalação
 
 1. **Clone o Repositório**:
-   ```
-   git clone https://github.com/insper-classroom/24-1-md-eng-proj-sql-projetosql_caio_vitor.git
+   ```bash
+   git clone https://github.com/cribeirop/Rastreamento_de_Encomendas.git
    ```
 
 2. **Crie um Ambiente Virtual**:
-   ```
+   ```bash
    python -m venv venv
    ```
 
 3. **Ative o Ambiente Virtual**:
    - Windows:
-     ```
+     ```bash
      .\venv\Scripts\activate
      ```
    - macOS/Linux:
-     ```
+     ```bash
      source venv/bin/activate
      ```
 
@@ -72,10 +68,10 @@ Para configurar e rodar a aplicação, siga os passos abaixo:
 2. **Acesse a Documentação**:
    - Acesse [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) para visualizar e testar os endpoints disponíveis através da interface interativa do Swagger.
 
-### Diagrama ER
+### Diagrama Entidade Relacionamento
 
-![Diagrama ER](Modelo-ER.png)
+![Diagrama ER](img/modeloER.png)
 
 ### Vídeo de Demonstração
 
-Confira o vídeo de demonstração das atualizações do Handout 02 neste [link](https://youtu.be/7tVjPZmdGRA).
+Confira o vídeo demonstrativo do funcionamento da API através do link [https://youtu.be/7tVjPZmdGRA](https://youtu.be/7tVjPZmdGRA).
