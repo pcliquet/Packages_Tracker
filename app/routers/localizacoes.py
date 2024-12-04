@@ -5,7 +5,6 @@ from database import get_db
 import schemas
 import crud
 
-# Inicializar o roteador
 router = APIRouter(prefix="/encomendas", tags=["Localizacao"])
 
 @router.post("/{encomenda_id}/localizacao", response_model=schemas.LocalizacaoEncomendaResponse)
