@@ -1,84 +1,119 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
-from typing import List, Optional
+from sqlalchemy.orm import Session
+from database import SessionLocal, engine
+from typing import List
+import models
 
+# Criar as tabelas no banco de dados
+models.Base.metadata.create_all(bind=engine)
+
+# Inicializar o FastAPI
 app = FastAPI()
 
-class Encomenda(BaseModel):
-    id: int
+# Dependência do banco de dados
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# Modelos Pydantic
+class EncomendaBase(BaseModel):
     data_envio: str
     status: str
     destino: str
     peso: float
 
-class LocalizacaoEncomenda(BaseModel):
+class EncomendaCreate(EncomendaBase):
+    pass
+
+class EncomendaResponse(EncomendaBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+class LocalizacaoBase(BaseModel):
+    localizacao: str
+    data_registro: str
+
+class LocalizacaoEncomendaCreate(LocalizacaoBase):
+    pass
+
+class LocalizacaoEncomendaResponse(LocalizacaoBase):
     id: int
     encomenda_id: int
-    data_registro: str
-    localizacao: str
 
-encomendas = []
-historico_localizacao = []
+    class Config:
+        orm_mode = True
 
-@app.get("/encomendas/", response_model=List[Encomenda])
-async def listar_todas_encomendas():
+# Endpoints de Encomendas
+@app.get("/encomendas/", response_model=List[EncomendaResponse])
+async def listar_todas_encomendas(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    encomendas = db.query(models.Encomenda).offset(skip).limit(limit).all()
     return encomendas
 
-@app.post("/encomendas/")
-async def criar_encomenda(encomenda: Encomenda):
-    encomendas.append(encomenda)
-    return {"msg": "Encomenda criada com sucesso!"}
-
-@app.get("/encomendas/{encomenda_id}")
-async def ler_encomenda(encomenda_id: int):
-    for encomenda in encomendas:
-        if encomenda.id == encomenda_id:
-            return encomenda
+@app.get("/encomendas/{encomenda_id}", response_model=EncomendaResponse)
+async def ler_encomenda(encomenda_id: int, db: Session = Depends(get_db)):
+    encomenda = db.query(models.Encomenda).filter(models.Encomenda.id == encomenda_id).first()
+    if encomenda:
+        return encomenda
     raise HTTPException(status_code=404, detail="Encomenda não encontrada")
 
+@app.post("/encomendas/", response_model=EncomendaResponse)
+async def criar_encomenda(encomenda: EncomendaCreate, db: Session = Depends(get_db)):
+    nova_encomenda = models.Encomenda(
+        data_envio=encomenda.data_envio,
+        status=encomenda.status,
+        destino=encomenda.destino,
+        peso=encomenda.peso
+    )
+    db.add(nova_encomenda)
+    db.commit()
+    db.refresh(nova_encomenda)
+    return nova_encomenda
+
 @app.put("/encomendas/{encomenda_id}")
-async def atualizar_encomenda(encomenda_id: int, encomenda: Encomenda):
-    for idx, e in enumerate(encomendas):
-        if e.id == encomenda_id:
-            encomendas[idx] = encomenda
-            return {"msg": "Encomenda atualizada com sucesso!"}
+async def atualizar_encomenda(encomenda_id: int, encomenda: EncomendaBase, db: Session = Depends(get_db)):
+    db_encomenda = db.query(models.Encomenda).filter(models.Encomenda.id == encomenda_id).first()
+    if db_encomenda:
+        for key, value in encomenda.dict().items():
+            setattr(db_encomenda, key, value)
+        db.commit()
+        db.refresh(db_encomenda)
+        return {"msg": "Encomenda atualizada com sucesso!"}
     raise HTTPException(status_code=404, detail="Encomenda não encontrada")
 
 @app.delete("/encomendas/{encomenda_id}")
-async def deletar_encomenda(encomenda_id: int):
-    for idx, e in enumerate(encomendas):
-        if e.id == encomenda_id:
-            del encomendas[idx]
-            return {"msg": "Encomenda deletada com sucesso!"}
+async def deletar_encomenda(encomenda_id: int, db: Session = Depends(get_db)):
+    db_encomenda = db.query(models.Encomenda).filter(models.Encomenda.id == encomenda_id).first()
+    if db_encomenda:
+        db.delete(db_encomenda)
+        db.commit()
+        return {"msg": "Encomenda deletada com sucesso!"}
     raise HTTPException(status_code=404, detail="Encomenda não encontrada")
 
-@app.post("/encomendas/{encomenda_id}/localizacao", response_model=LocalizacaoEncomenda)
-async def adicionar_localizacao_encomenda(encomenda_id: int, localizacao: LocalizacaoEncomenda):
-    for enc in encomendas:
-        if enc.id == encomenda_id:
-            localizacao.encomenda_id = encomenda_id
-            historico_localizacao.append(localizacao)
-            return {"msg": "Localização da encomenda registrada com sucesso!"}
+# Endpoints de Localizações
+@app.post("/encomendas/{encomenda_id}/localizacao", response_model=LocalizacaoEncomendaResponse)
+async def adicionar_localizacao_encomenda(encomenda_id: int, localizacao: LocalizacaoEncomendaCreate, db: Session = Depends(get_db)):
+    db_encomenda = db.query(models.Encomenda).filter(models.Encomenda.id == encomenda_id).first()
+    if db_encomenda:
+        db_localizacao = models.LocalizacaoEncomenda(
+            encomenda_id=encomenda_id,
+            localizacao=localizacao.localizacao,
+            data_registro=localizacao.data_registro
+        )
+        db.add(db_localizacao)
+        db.commit()
+        db.refresh(db_localizacao)
+        return db_localizacao
     raise HTTPException(status_code=404, detail="Encomenda não encontrada")
 
-from fastapi import HTTPException
-
-@app.get("/encomendas/{encomenda_id}/historico_localizacao", response_model=List[LocalizacaoEncomenda])
-async def listar_historico_localizacao_encomenda(encomenda_id: int):
-    historico = []
-    for hist in historico_localizacao:
-        if hist.encomenda_id == encomenda_id:
-            historico.append(hist)
+@app.get("/encomendas/{encomenda_id}/historico_localizacao", response_model=List[LocalizacaoEncomendaResponse])
+async def listar_historico_localizacao_encomenda(encomenda_id: int, db: Session = Depends(get_db)):
+    historico = db.query(models.LocalizacaoEncomenda).filter(models.LocalizacaoEncomenda.encomenda_id == encomenda_id).all()
     if historico:
         return historico
     raise HTTPException(status_code=404, detail="Histórico de localização não encontrado para esta encomenda")
-
-@app.delete("/encomendas/{encomenda_id}/historico_localizacao")
-async def limpar_historico_localizacao_encomenda(encomenda_id: int):
-    elementos_para_remover = []
-    for hist in historico_localizacao:
-        if hist.encomenda_id == encomenda_id:
-            elementos_para_remover.append(hist)
-    for elem in elementos_para_remover:
-        historico_localizacao.remove(elem)
-    return {"msg": "Histórico de localização da encomenda deletado com sucesso!"}

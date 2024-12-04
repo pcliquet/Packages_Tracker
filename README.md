@@ -74,4 +74,4 @@ Para configurar e rodar a aplicação, siga os passos abaixo:
 
 ### Vídeo de Demonstração
 
-Confira o vídeo demonstrativo do funcionamento da API através do link [https://youtu.be/7tVjPZmdGRA](https://youtu.be/7tVjPZmdGRA).
+Confira o vídeo demonstrativo do funcionamento da API clicando neste link [https://youtu.be/7tVjPZmdGRA](https://youtu.be/7tVjPZmdGRA).

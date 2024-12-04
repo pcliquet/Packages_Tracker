@@ -11,14 +11,17 @@ class Encomenda(Base):
     destino = Column(String(255), index=True)     
     peso = Column(Float)
 
-    localizacoes = relationship("LocalizacaoEncomenda", back_populates="encomenda")
+    # Relacionamento com localizações
+    localizacoes = relationship("LocalizacaoEncomenda", back_populates="encomenda", cascade="all, delete-orphan")
+
 
 class LocalizacaoEncomenda(Base):
     __tablename__ = 'localizacoes_encomenda'
 
     id = Column(Integer, primary_key=True, index=True)
-    encomenda_id = Column(Integer, ForeignKey('encomendas.id'))
-    data_registro = Column(String(255), index=True)  
-    localizacao = Column(String(255), index=True)    
+    encomenda_id = Column(Integer, ForeignKey('encomendas.id'), nullable=False)
+    localizacao = Column(String(255), nullable=False)
+    data_registro = Column(String(255), nullable=False)
 
+    # Relacionamento com encomendas
     encomenda = relationship("Encomenda", back_populates="localizacoes")
