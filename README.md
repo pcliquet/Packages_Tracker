@@ -70,8 +70,13 @@ Para configurar e rodar a aplicação, siga os passos abaixo:
 
 ### Diagrama Entidade Relacionamento
 
-![Diagrama ER](img/modeloER.png)
+![Diagrama ER](img/entidade_relacionamento.png)
+
+### Modelo Relacional
+
+![Modelo Relacional](img/modelo_relacional.png)
+
 
 ### Vídeo de Demonstração
 
-Confira o vídeo demonstrativo do funcionamento da API clicando neste link [https://youtu.be/7tVjPZmdGRA](https://youtu.be/7tVjPZmdGRA).
+Confira o vídeo demonstrativo do funcionamento da API clicando neste link [https://youtu.be/zYnqHrrbyAM](https://youtu.be/zYnqHrrbyAM).
