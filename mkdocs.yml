@@ -1,0 +1,34 @@
+site_name: Packages Tracker
+dev_addr: "0.0.0.0:9000"
+
+theme:
+  name: material
+  icon:
+    logo: material/package-variant-closed 
+  palette:
+    scheme: default
+    primary: "indigo"    
+  font:
+    text: "Roboto"
+    code: "Fira Code"
+  features:
+    - navigation.expand
+    - navigation.sections
+    - navigation.instant
+    - search.highlight
+    - content.code.annotate
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Project Structure: project-structure.md
+  - Technologies Used: technologies.md
+  - Database Setup: database.md
+  - Contributing Guidelines: contributing.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+
