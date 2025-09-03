@@ -1,27 +1,27 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from database import Base
+from .database import Base
 
-class Encomenda(Base):
-    __tablename__ = 'encomendas'
+class Package(Base):
+    __tablename__ = 'packages'
 
     id = Column(Integer, primary_key=True, index=True)
-    data_envio = Column(String(255), index=True)  
+    shipping_date = Column(String(255), index=True)  
     status = Column(String(255), index=True)      
-    destino = Column(String(255), index=True)     
-    peso = Column(Float)
+    destination = Column(String(255), index=True)     
+    weight = Column(Float)
 
-    # Relacionamento com localizações
-    localizacoes = relationship("LocalizacaoEncomenda", back_populates="encomenda", cascade="all, delete-orphan")
+    # Relationship with locations
+    locations = relationship("PackageLocation", back_populates="package", cascade="all, delete-orphan")
 
 
-class LocalizacaoEncomenda(Base):
-    __tablename__ = 'localizacoes_encomenda'
+class PackageLocation(Base):
+    __tablename__ = 'package_locations'
 
     id = Column(Integer, primary_key=True, index=True)
-    encomenda_id = Column(Integer, ForeignKey('encomendas.id'), nullable=False)
-    localizacao = Column(String(255), nullable=False)
-    data_registro = Column(String(255), nullable=False)
+    package_id = Column(Integer, ForeignKey('packages.id'), nullable=False)
+    location = Column(String(255), nullable=False)
+    registration_date = Column(String(255), nullable=False)
 
-    # Relacionamento com encomendas
-    encomenda = relationship("Encomenda", back_populates="localizacoes")
+    # Relationship with packages
+    package = relationship("Package", back_populates="locations")

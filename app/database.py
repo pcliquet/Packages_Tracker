@@ -1,9 +1,8 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from core.config import settings
+from sqlalchemy.orm import sessionmaker, declarative_base
+from .core.config import settings
 
-# Dependência para obter a sessão do banco de dados
+# Database dependency to get database session
 def get_db():
     db = SessionLocal()
     try:

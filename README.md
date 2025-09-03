@@ -1,30 +1,38 @@
-# API de Gerenciamento de Encomendas
+# Package Management API
 
-Este projeto é uma aplicação FastAPI que implementa um sistema de gerenciamento de encomendas e histórico de localização. Nesta versão, integramos a aplicação com um banco de dados MySQL usando o ORM SQLAlchemy.
+This project is a FastAPI application that implements a package management system and location history. In this version, we integrate the application with a MySQL database using SQLAlchemy ORM.
 
-## Configuração do Ambiente
+## Features
 
-Para configurar e rodar a aplicação, siga os passos abaixo:
+- Package management (CRUD operations)
+- Location tracking for packages
+- Location history
+- MySQL database integration
+- RESTful API
 
-### Requisitos
+## Environment Setup
+
+To configure and run the application, follow the steps below:
+
+### Requirements
 
 - Python 3.8+
 - MySQL Workbench
-- Bibliotecas Python listadas em `requirements.txt`
+- Python libraries listed in `requirements.txt`
 
-### Instalação
+### Installation
 
-1. **Clone o Repositório**:
+1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/cribeirop/Rastreamento_de_Encomendas.git
+   git clone https://github.com/cribeirop/Package_Tracking.git
    ```
 
-2. **Crie um Ambiente Virtual**:
+2. **Create Virtual Environment:**
    ```bash
    python -m venv venv
    ```
 
-3. **Ative o Ambiente Virtual**:
+3. **Activate Virtual Environment:**
    - Windows:
      ```bash
      .\venv\Scripts\activate
@@ -34,49 +42,87 @@ Para configurar e rodar a aplicação, siga os passos abaixo:
      source venv/bin/activate
      ```
 
-4. **Instale as Dependências**:
-   ```
+4. **Install Dependencies:**
+   ```bash
    pip install -r requirements.txt
    ```
 
-### Configuração do Banco de Dados
+### Database Configuration
 
-1. **Configuração de Variáveis de Ambiente**:
-   - Crie um arquivo `.env` na raiz do projeto.
-   - O arquivo `.env` deve incluir a seguinte variável de ambiente para definir a conexão ao banco de dados MySQL:
+1. **Environment Variables Configuration:**
+   - Create a `.env` file in the project root.
+   - The `.env` file should include the following environment variable to define the MySQL database connection:
 
    ```
    DATABASE_URL=mysql://username:password@localhost/dbname
    ```
 
-   **Observações**:
-   - Substitua `username` pelo nome do usuário do banco de dados.
-   - Substitua `password` pela senha do banco de dados.
-   - Substitua `dbname` pelo nome do banco de dados que você criou.
+   **Notes:**
+   - Replace `username` with your database username.
+   - Replace `password` with your database password.
+   - Replace `dbname` with the database name you created.
 
-2. **Criar o Banco de Dados**:
-   - Crie um banco de dados no MySQL.
-   - As tabelas serão geradas automaticamente ao iniciar a aplicação.
+2. **Create Database:**
+   - Create a database in MySQL.
+   - Tables will be generated automatically when starting the application.
 
-### Executar a Aplicação
+### Running the Application
 
-1. **Inicie o Servidor**:
+1. **Start the Server:**
+   ```bash
+   uvicorn app.main:app --reload
    ```
-   uvicorn main:app --reload
+
+2. **Access Documentation:**
+   - Access [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) to view and test available endpoints through the interactive Swagger interface.
+
+### Entity Relationship Diagram
+
+![ER Diagram](img/entidade_relacionamento.png)
+
+### Relational Model
+
+![Relational Model](img/modelo_relacional.png)
+
+### Demo Video
+
+Check out the demo video of the API functionality by clicking this link [https://youtu.be/zYnqHrrbyAM](https://youtu.be/zYnqHrrbyAM).
+
+## Frontend Setup
+
+1. **Navigate to frontend directory:**
+   ```bash
+   cd frontend
    ```
 
-2. **Acesse a Documentação**:
-   - Acesse [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) para visualizar e testar os endpoints disponíveis através da interface interativa do Swagger.
+2. **Install Node.js dependencies:**
+   ```bash
+   npm install
+   ```
 
-### Diagrama Entidade Relacionamento
+3. **Start the React development server:**
+   ```bash
+   npm start
+   ```
 
-![Diagrama ER](img/entidade_relacionamento.png)
+4. **Access the frontend:**
+   - Frontend will be available at: http://localhost:3000
+   - API calls are proxied to: http://localhost:8000
 
-### Modelo Relacional
+## API Documentation
 
-![Modelo Relacional](img/modelo_relacional.png)
+Access the interactive API documentation at: http://localhost:8000/docs
 
+## Database Schema
 
-### Vídeo de Demonstração
+The application uses two main tables:
+- `packages`: Stores package information
+- `package_locations`: Stores location history for each package
 
-Confira o vídeo demonstrativo do funcionamento da API clicando neste link [https://youtu.be/zYnqHrrbyAM](https://youtu.be/zYnqHrrbyAM).
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request

@@ -5,6 +5,6 @@ load_dotenv()
 
 class Settings:
     DATABASE_URL: str = os.getenv("DATABASE_URL")
-    APP_NAME: str = "Gerenciador de Encomendas"
+    APP_NAME: str = "Package Manager"
 
 settings = Settings()

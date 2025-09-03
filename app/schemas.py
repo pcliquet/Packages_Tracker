@@ -1,35 +1,37 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class EncomendaBase(BaseModel):
-    data_envio: str
+class PackageBase(BaseModel):
+    shipping_date: str
     status: str
-    destino: str
-    peso: float
+    destination: str
+    weight: float
 
-class EncomendaCreate(EncomendaBase):
+class PackageCreate(PackageBase):
     pass
 
-class EncomendaUpdate(BaseModel):
-    data_envio: Optional[str] = None
+class PackageUpdate(BaseModel):
+    shipping_date: Optional[str] = None
     status: Optional[str] = None
-    destino: Optional[str] = None
-    peso: Optional[float] = None
+    destination: Optional[str] = None
+    weight: Optional[float] = None
 
-class EncomendaResponse(EncomendaBase):
+class PackageResponse(PackageBase):
     id: int
+    
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-class LocalizacaoBase(BaseModel):
-    localizacao: str
-    data_registro: str
+class LocationBase(BaseModel):
+    location: str
+    registration_date: str
 
-class LocalizacaoEncomendaCreate(LocalizacaoBase):
+class PackageLocationCreate(LocationBase):
     pass
 
-class LocalizacaoEncomendaResponse(LocalizacaoBase):
+class PackageLocationResponse(LocationBase):
     id: int
-    encomenda_id: int
+    package_id: int
+    
     class Config:
-        orm_mode = True
+        from_attributes = True

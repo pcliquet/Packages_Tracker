@@ -1,52 +1,53 @@
 from sqlalchemy.orm import Session
-import models, schemas
+from .models import Package, PackageLocation
+from .schemas import PackageCreate, PackageUpdate, PackageLocationCreate
 
-def listar_encomendas(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Encomenda).offset(skip).limit(limit).all()
+def list_packages(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(Package).offset(skip).limit(limit).all()
 
-def criar_encomenda(db: Session, encomenda: schemas.EncomendaCreate):
-    nova_encomenda = models.Encomenda(
-        data_envio=encomenda.data_envio,
-        status=encomenda.status,
-        destino=encomenda.destino,
-        peso=encomenda.peso
+def create_package(db: Session, package: PackageCreate):
+    new_package = Package(
+        shipping_date=package.shipping_date,
+        status=package.status,
+        destination=package.destination,
+        weight=package.weight
     )
-    db.add(nova_encomenda)
+    db.add(new_package)
     db.commit()
-    db.refresh(nova_encomenda)
-    return nova_encomenda
+    db.refresh(new_package)
+    return new_package
 
-def ler_encomenda(db: Session, encomenda_id: int):
-    return db.query(models.Encomenda).filter(models.Encomenda.id == encomenda_id).first()
+def read_package(db: Session, package_id: int):
+    return db.query(Package).filter(Package.id == package_id).first()
 
-def atualizar_encomenda(db: Session, encomenda_id: int, encomenda: schemas.EncomendaUpdate):
-    db_encomenda = db.query(models.Encomenda).filter(models.Encomenda.id == encomenda_id).first()
-    if not db_encomenda:
+def update_package(db: Session, package_id: int, package: PackageUpdate):
+    db_package = db.query(Package).filter(Package.id == package_id).first()
+    if not db_package:
         return None
-    for key, value in encomenda.dict(exclude_unset=True).items():
-        setattr(db_encomenda, key, value)
+    for key, value in package.dict(exclude_unset=True).items():
+        setattr(db_package, key, value)
     db.commit()
-    db.refresh(db_encomenda)
-    return db_encomenda
+    db.refresh(db_package)
+    return db_package
 
-def deletar_encomenda(db: Session, encomenda_id: int):
-    db_encomenda = db.query(models.Encomenda).filter(models.Encomenda.id == encomenda_id).first()
-    if not db_encomenda:
+def delete_package(db: Session, package_id: int):
+    db_package = db.query(Package).filter(Package.id == package_id).first()
+    if not db_package:
         return False
-    db.delete(db_encomenda)
+    db.delete(db_package)
     db.commit()
     return True
 
-def criar_localizacao_encomenda(db: Session, encomenda_id: int, localizacao: schemas.LocalizacaoEncomendaCreate):
-    nova_localizacao = models.LocalizacaoEncomenda(
-        encomenda_id=encomenda_id,
-        localizacao=localizacao.localizacao,
-        data_registro=localizacao.data_registro
+def create_package_location(db: Session, package_id: int, location: PackageLocationCreate):
+    new_location = PackageLocation(
+        package_id=package_id,
+        location=location.location,
+        registration_date=location.registration_date
     )
-    db.add(nova_localizacao)
+    db.add(new_location)
     db.commit()
-    db.refresh(nova_localizacao)
-    return nova_localizacao
+    db.refresh(new_location)
+    return new_location
 
-def listar_historico_localizacoes(db: Session, encomenda_id: int):
-    return db.query(models.LocalizacaoEncomenda).filter(models.LocalizacaoEncomenda.encomenda_id == encomenda_id).all()
+def list_location_history(db: Session, package_id: int):
+    return db.query(PackageLocation).filter(PackageLocation.package_id == package_id).all()
