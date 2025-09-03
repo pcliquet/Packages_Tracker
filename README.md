@@ -109,6 +109,8 @@ Check out the demo video of the API functionality by clicking this link [https:/
    - Frontend will be available at: http://localhost:3000
    - API calls are proxied to: http://localhost:8000
 
+![Frontend](img/frontend.png)
+
 ## API Documentation
 
 Access the interactive API documentation at: http://localhost:8000/docs
