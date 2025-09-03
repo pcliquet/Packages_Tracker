@@ -10,8 +10,6 @@ idna==3.7
 mysqlclient==2.2.4
 uvicorn==0.29.0
 pydantic==1.10.12
-pydantic==2.4.2
-pydantic_core==2.10.1
 SQLAlchemy==2.0.30
 pycparser==2.22
 PyMySQL==1.1.0
