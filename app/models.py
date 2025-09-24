@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from .database import Base
 
+
 class Package(Base):
     __tablename__ = 'packages'
 
@@ -25,3 +26,4 @@ class PackageLocation(Base):
 
     # Relationship with packages
     package = relationship("Package", back_populates="locations")
+    
